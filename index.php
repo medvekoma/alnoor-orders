@@ -199,6 +199,10 @@ function renderLogin(string $error = ''): void {
 }
 function renderApp(): void {
     $menuJson = file_get_contents(__DIR__ . '/menu.json');
+    if ($menuJson === false) {
+        echo '<h1>Menu unavailable. Please contact the administrator.</h1>';
+        return;
+    }
     $menu = json_decode($menuJson, true);
     $nickname = htmlspecialchars($_SESSION['nickname']);
     $menuJs = json_encode($menu); // safe to embed in <script>
