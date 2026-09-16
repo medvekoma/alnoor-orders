@@ -1,5 +1,5 @@
 {
-  "Chicken Dishes": {
+  "Chicken": {
     "Chicken Curry": 2060,
     "Chicken Tikka Massala": 2060,
     "Butter Chicken": 2060,
@@ -25,14 +25,14 @@
     "Prawn Tikka Masala": 2990,
     "Prawn Vindaloo": 2990
   },
-  "Paneer Dishes": {
+  "Paneer": {
     "Paneer Tikka Masala": 2060,
     "Paneer Makhani": 2060,
     "Palak Paneer": 2060,
     "Matar Paneer": 2060,
     "Paneer Korma": 2060
   },
-  "Vegetable Dishes": {
+  "Vegetable": {
     "Punjabi Cholay": 1890,
     "Dal Tadka": 1890,
     "Mix Vegetable Curry": 1890,
@@ -55,7 +55,7 @@
     "Lamb White Karahi": 6000,
     "Lahori Lamb Karahi": 6000
   },
-  "Sides Dishes": {
+  "Sides": {
     "Basmati Rice": 540,
     "Cumin Rice": 540,
     "Turmeric Rice": 540,

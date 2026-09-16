@@ -1,5 +1,5 @@
 <?php
-define('SHARED_PASSWORD', 'change-me');
+require_once __DIR__ . '/config.php';
 define('ORDERS_DIR', __DIR__ . '/orders');
 
 session_start();
@@ -127,25 +127,25 @@ function handleSaveOrder(): void {
             'qty'   => $qty,
         ];
     }
-    if (empty($clean)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'No valid items']);
-        return;
-    }
     $nickname = $_SESSION['nickname'];
     $orders = readOrders();
-    $found = false;
-    foreach ($orders as &$entry) {
-        if ($entry['nickname'] === $nickname) {
-            $entry['items'] = $clean;
-            $entry['timestamp'] = date('c');
-            $found = true;
-            break;
+    if (empty($clean)) {
+        // Remove the user's order entry
+        $orders = array_values(array_filter($orders, fn($e) => $e['nickname'] !== $nickname));
+    } else {
+        $found = false;
+        foreach ($orders as &$entry) {
+            if ($entry['nickname'] === $nickname) {
+                $entry['items'] = $clean;
+                $entry['timestamp'] = date('c');
+                $found = true;
+                break;
+            }
         }
-    }
-    unset($entry);
-    if (!$found) {
-        $orders[] = ['nickname' => $nickname, 'timestamp' => date('c'), 'items' => $clean];
+        unset($entry);
+        if (!$found) {
+            $orders[] = ['nickname' => $nickname, 'timestamp' => date('c'), 'items' => $clean];
+        }
     }
     try {
         writeOrders($orders);
@@ -159,7 +159,7 @@ function handleSaveOrder(): void {
 
 function handleTodaySummary(): void {
     $orders = readOrders();
-    $aggregate = []; // dish => ['dish'=>..., 'price'=>..., 'qty'=>...]
+    $aggregate = [];
     foreach ($orders as $entry) {
         foreach ($entry['items'] as $item) {
             $key = $item['dish'];
@@ -171,7 +171,12 @@ function handleTodaySummary(): void {
     }
     $dishes = array_values($aggregate);
     $total = array_sum(array_map(fn($d) => $d['price'] * $d['qty'], $dishes));
-    echo json_encode(['dishes' => $dishes, 'total' => $total]);
+    $users = array_map(fn($e) => [
+        'nickname' => $e['nickname'],
+        'items'    => $e['items'],
+        'total'    => array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $e['items'])),
+    ], $orders);
+    echo json_encode(['dishes' => $dishes, 'total' => $total, 'users' => $users]);
 }
 function renderLogin(string $error = ''): void {
     $errorHtml = $error ? '<p class="error">' . htmlspecialchars($error) . '</p>' : '';
@@ -181,7 +186,7 @@ function renderLogin(string $error = ''): void {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Alnoor — Login</title>
+      <title>Al Noor — Login</title>
       <style>
         body { font-family: sans-serif; max-width: 400px; margin: 80px auto; padding: 0 1rem; }
         h1 { margin-bottom: 1.5rem; }
@@ -192,9 +197,9 @@ function renderLogin(string $error = ''): void {
       </style>
     </head>
     <body>
-      <h1>Alnoor Order</h1>
+      <h1>Al Noor Order</h1>
       <form method="post">
-        <label>Nickname
+        <label>Nickname (make sure it's unique)
           <input type="text" name="nickname" maxlength="32" required autofocus>
         </label>
         <label>Password
@@ -222,7 +227,7 @@ function renderApp(): void {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Alnoor Order</title>
+      <title>Al Noor Order</title>
       <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 1rem; }
@@ -233,9 +238,14 @@ function renderApp(): void {
         nav button.active { border-color: #b03; background: #b03; color: #fff; }
         .view { display: none; }
         .view.active { display: block; }
-        .category { margin-bottom: 1.5rem; }
-        .category h2 { font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: .3rem; margin-bottom: .5rem; }
-        .dish-row { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; }
+        .category { margin-bottom: 1.5rem; border-radius: 8px; overflow: hidden; }
+        .category h2 { font-size: 1.05rem; font-weight: bold; padding: .5rem .75rem; margin: 0 0 .25rem 0; background: #b03; color: #fff; letter-spacing: .03em; }
+        .dish-row { padding: .35rem .75rem; }
+        .category:nth-child(2n) h2 { background: #1a6fa8; }
+        .category:nth-child(3n) h2 { background: #2a7a3b; }
+        .category:nth-child(4n) h2 { background: #7a3a9a; }
+        .category:nth-child(5n) h2 { background: #b06020; }
+        .dish-row { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; font-size: 1.05rem; }
         .dish-name { flex: 1; }
         .dish-price { color: #555; min-width: 60px; text-align: right; }
         .qty-ctrl { display: flex; align-items: center; gap: .3rem; }
@@ -258,7 +268,7 @@ function renderApp(): void {
     </head>
     <body>
       <header>
-        <h1>Alnoor — Hi, $nickname</h1>
+        <h1>Al Noor — Hi, $nickname</h1>
         <a class="logout" href="?logout=1">Logout</a>
       </header>
       <nav>
@@ -355,12 +365,18 @@ function renderApp(): void {
         document.getElementById('totalPrice').textContent = total.toLocaleString('hu-HU');
       }
 
+      async function apiFetch(url, opts) {
+        const res = await fetch(url, opts);
+        if (res.status === 401) { location.href = location.pathname; return null; }
+        return res;
+      }
+
       async function loadExistingOrder() {
-        const res = await fetch('?action=my_order');
+        const res = await apiFetch('?action=my_order');
+        if (!res) return;
         const data = await res.json();
         if (data.items) {
           data.items.forEach(item => { qty[item.dish] = item.qty; });
-          // Re-render qty displays
           for (const dish of Object.keys(qty)) {
             const el = document.getElementById('qty-' + dish);
             if (el) el.textContent = qty[dish];
@@ -380,19 +396,19 @@ function renderApp(): void {
             }
           }
         }
-        if (items.length === 0) { msg.textContent = 'Add at least one dish.'; msg.style.color='red'; return; }
         btn.disabled = true;
         msg.textContent = '';
-        const res = await fetch('?action=save_order', {
+        const res = await apiFetch('?action=save_order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ items })
         });
+        if (!res) return;
         const data = await res.json();
         btn.disabled = false;
         if (data.ok) {
           msg.style.color = 'green';
-          msg.textContent = 'Order saved!';
+          msg.textContent = items.length === 0 ? 'Order cleared.' : 'Order saved!';
         } else {
           msg.style.color = 'red';
           msg.textContent = data.error || 'Error saving order.';
@@ -402,7 +418,8 @@ function renderApp(): void {
       async function loadMyOrder() {
         const container = document.getElementById('myorder-container');
         container.innerHTML = 'Loading...';
-        const res = await fetch('?action=my_order');
+        const res = await apiFetch('?action=my_order');
+        if (!res) return;
         const data = await res.json();
         if (!data.items) {
           container.innerHTML = '<p class="empty-msg">You have no order for today. Go to the Order tab to place one.</p>';
@@ -424,21 +441,40 @@ function renderApp(): void {
         const dateEl = document.getElementById('summaryDate');
         container.innerHTML = 'Loading...';
         dateEl.textContent = 'Date: ' + new Date().toLocaleDateString('hu-HU');
-        const res = await fetch('?action=today_summary');
+        const res = await apiFetch('?action=today_summary');
+        if (!res) return;
         const data = await res.json();
         if (!data.dishes || data.dishes.length === 0) {
           container.innerHTML = '<p class="empty-msg">No orders placed yet today.</p>';
           return;
         }
-        let rows = data.dishes.map(d =>
-          '<tr><td>' + escHtml(d.dish) + '</td><td>' + d.qty + '</td><td>' + (d.price * d.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
-        ).join('');
-        container.innerHTML =
-          '<table>' +
-          '<thead><tr><th>Dish</th><th>Qty</th><th>Subtotal</th></tr></thead>' +
-          '<tbody>' + rows + '</tbody>' +
-          '<tfoot><tr class="total-row"><td colspan="2">Total</td><td>' + data.total.toLocaleString('hu-HU') + ' HUF</td></tr></tfoot>' +
-          '</table>';
+        const orderText = data.dishes.map(d => d.qty + 'x ' + d.dish).join(String.fromCharCode(10));
+        let html =
+          '<pre id="order-text" style="background:#1a1a1a;color:#f0f0f0;border:1px solid #333;border-radius:6px;padding:1rem;white-space:pre-wrap;font-family:monospace;margin-bottom:1rem;cursor:pointer" title="Click to copy">' + escHtml(orderText) + '</pre>' +
+          '<button onclick="copyOrder()" style="margin-bottom:1.5rem">Copy order</button>';
+        for (const user of data.users) {
+          const rows = user.items.map(i =>
+            '<tr><td>' + escHtml(i.dish) + '</td><td>' + i.qty + '</td><td>' + (i.price * i.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
+          ).join('');
+          html +=
+            '<h3 style="margin:1.25rem 0 .4rem">' + escHtml(user.nickname) + '</h3>' +
+            '<table>' +
+            '<thead><tr><th>Dish</th><th>Qty</th><th>Subtotal</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody>' +
+            '<tfoot><tr class="total-row"><td colspan="2">Total</td><td>' + user.total.toLocaleString('hu-HU') + ' HUF</td></tr></tfoot>' +
+            '</table>';
+        }
+        container.innerHTML = html;
+        document.getElementById('order-text').addEventListener('click', copyOrder);
+      }
+
+      function copyOrder() {
+        const el = document.getElementById('order-text');
+        if (!el) return;
+        navigator.clipboard.writeText(el.textContent).then(() => {
+          const btn = document.querySelector('#view-summary button');
+          if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy order', 1500); }
+        });
       }
 
       // Init
