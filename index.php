@@ -78,10 +78,84 @@ function sanitizeNickname(string $nick): string {
     return substr(strip_tags(trim($nick)), 0, 32);
 }
 
-// --- Stubs (filled in subsequent tasks) ---
-function handleMyOrder(): void    { echo json_encode(['items' => []]); }
-function handleTodaySummary(): void { echo json_encode(['dishes' => []]); }
-function handleSaveOrder(): void  { echo json_encode(['ok' => true]); }
+// --- API Handlers ---
+function handleMyOrder(): void {
+    $nickname = $_SESSION['nickname'];
+    $orders = readOrders();
+    foreach ($orders as $entry) {
+        if ($entry['nickname'] === $nickname) {
+            $total = array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $entry['items']));
+            echo json_encode(['nickname' => $nickname, 'items' => $entry['items'], 'total' => $total]);
+            return;
+        }
+    }
+    echo json_encode(['nickname' => $nickname, 'items' => null]);
+}
+
+function handleSaveOrder(): void {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['error' => 'POST required']);
+        return;
+    }
+    $body = json_decode(file_get_contents('php://input'), true);
+    if (!isset($body['items']) || !is_array($body['items'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'items array required']);
+        return;
+    }
+    // Validate and sanitize items
+    $clean = [];
+    foreach ($body['items'] as $item) {
+        if (!isset($item['dish'], $item['price'], $item['qty'])) continue;
+        $qty = (int)$item['qty'];
+        if ($qty < 1 || $qty > 9) continue;
+        $clean[] = [
+            'dish'  => substr(strip_tags((string)$item['dish']), 0, 128),
+            'price' => (int)$item['price'],
+            'qty'   => $qty,
+        ];
+    }
+    if (empty($clean)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No valid items']);
+        return;
+    }
+    $nickname = $_SESSION['nickname'];
+    $orders = readOrders();
+    $found = false;
+    foreach ($orders as &$entry) {
+        if ($entry['nickname'] === $nickname) {
+            $entry['items'] = $clean;
+            $entry['timestamp'] = date('c');
+            $found = true;
+            break;
+        }
+    }
+    unset($entry);
+    if (!$found) {
+        $orders[] = ['nickname' => $nickname, 'timestamp' => date('c'), 'items' => $clean];
+    }
+    writeOrders($orders);
+    echo json_encode(['ok' => true]);
+}
+
+function handleTodaySummary(): void {
+    $orders = readOrders();
+    $aggregate = []; // dish => ['dish'=>..., 'price'=>..., 'qty'=>...]
+    foreach ($orders as $entry) {
+        foreach ($entry['items'] as $item) {
+            $key = $item['dish'];
+            if (!isset($aggregate[$key])) {
+                $aggregate[$key] = ['dish' => $item['dish'], 'price' => $item['price'], 'qty' => 0];
+            }
+            $aggregate[$key]['qty'] += $item['qty'];
+        }
+    }
+    $dishes = array_values($aggregate);
+    $total = array_sum(array_map(fn($d) => $d['price'] * $d['qty'], $dishes));
+    echo json_encode(['dishes' => $dishes, 'total' => $total]);
+}
 function renderLogin(string $error = ''): void {
     $errorHtml = $error ? '<p class="error">' . htmlspecialchars($error) . '</p>' : '';
     echo <<<HTML
