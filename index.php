@@ -68,12 +68,16 @@ function readOrders(): array {
     $file = todayFile();
     if (!file_exists($file)) return [];
     $data = file_get_contents($file);
-    return json_decode($data, true) ?? [];
+    $decoded = json_decode($data, true);
+    return is_array($decoded) ? $decoded : [];
 }
 
 function writeOrders(array $orders): void {
     $file = todayFile();
     $fp = fopen($file, 'c');
+    if ($fp === false) {
+        throw new RuntimeException('Could not open order file for writing');
+    }
     flock($fp, LOCK_EX);
     ftruncate($fp, 0);
     fwrite($fp, json_encode($orders, JSON_PRETTY_PRINT));
@@ -143,7 +147,13 @@ function handleSaveOrder(): void {
     if (!$found) {
         $orders[] = ['nickname' => $nickname, 'timestamp' => date('c'), 'items' => $clean];
     }
-    writeOrders($orders);
+    try {
+        writeOrders($orders);
+    } catch (RuntimeException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to save order. Please try again.']);
+        return;
+    }
     echo json_encode(['ok' => true]);
 }
 
@@ -280,6 +290,13 @@ function renderApp(): void {
 
       <script>
       const MENU = $menuJs;
+
+      function escHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = String(s);
+        return d.innerHTML;
+      }
+
       // qty map: dish name -> qty
       const qty = {};
 
@@ -392,7 +409,7 @@ function renderApp(): void {
           return;
         }
         let rows = data.items.map(i =>
-          '<tr><td>' + i.dish + '</td><td>' + i.qty + '</td><td>' + (i.price * i.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
+          '<tr><td>' + escHtml(i.dish) + '</td><td>' + i.qty + '</td><td>' + (i.price * i.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
         ).join('');
         container.innerHTML =
           '<table>' +
@@ -414,7 +431,7 @@ function renderApp(): void {
           return;
         }
         let rows = data.dishes.map(d =>
-          '<tr><td>' + d.dish + '</td><td>' + d.qty + '</td><td>' + (d.price * d.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
+          '<tr><td>' + escHtml(d.dish) + '</td><td>' + d.qty + '</td><td>' + (d.price * d.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
         ).join('');
         container.innerHTML =
           '<table>' +
