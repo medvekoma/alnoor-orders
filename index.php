@@ -44,6 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_SESSION['authenticated']))
     exit;
 }
 
+// Logout route
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+    exit;
+}
+
 // UI routing
 if (!isset($_SESSION['authenticated'])) {
     renderLogin();
@@ -190,4 +197,234 @@ function renderLogin(string $error = ''): void {
     </html>
     HTML;
 }
-function renderApp(): void        { echo '<h1>App</h1>'; }
+function renderApp(): void {
+    $menuJson = file_get_contents(__DIR__ . '/menu.json');
+    $menu = json_decode($menuJson, true);
+    $nickname = htmlspecialchars($_SESSION['nickname']);
+    $menuJs = json_encode($menu); // safe to embed in <script>
+    echo <<<HTML
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Alnoor Order</title>
+      <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 1rem; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        header h1 { margin: 0; font-size: 1.3rem; }
+        nav { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
+        nav button { flex: 1; padding: .6rem; cursor: pointer; border: 2px solid #ccc; background: #fff; border-radius: 4px; font-size: .95rem; }
+        nav button.active { border-color: #b03; background: #b03; color: #fff; }
+        .view { display: none; }
+        .view.active { display: block; }
+        .category { margin-bottom: 1.5rem; }
+        .category h2 { font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: .3rem; margin-bottom: .5rem; }
+        .dish-row { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; }
+        .dish-name { flex: 1; }
+        .dish-price { color: #555; min-width: 60px; text-align: right; }
+        .qty-ctrl { display: flex; align-items: center; gap: .3rem; }
+        .qty-ctrl button { width: 28px; height: 28px; cursor: pointer; font-size: 1rem; border: 1px solid #ccc; background: #f5f5f5; border-radius: 3px; }
+        .qty-ctrl span { min-width: 20px; text-align: center; }
+        .order-footer { position: sticky; bottom: 0; background: #fff; border-top: 2px solid #eee; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; }
+        .order-footer strong { font-size: 1.1rem; }
+        #submitBtn { padding: .6rem 1.5rem; font-size: 1rem; cursor: pointer; background: #b03; color: #fff; border: none; border-radius: 4px; }
+        #submitBtn:disabled { background: #ccc; cursor: default; }
+        #submitMsg { color: green; margin-top: .5rem; }
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid #eee; }
+        table th { background: #f8f8f8; }
+        .total-row td { font-weight: bold; border-top: 2px solid #ccc; }
+        .empty-msg { color: #888; margin: 1rem 0; }
+        a.logout { font-size: .85rem; color: #666; text-decoration: none; }
+        a.logout:hover { text-decoration: underline; }
+        #summaryDate { color: #888; font-size: .85rem; margin-bottom: 1rem; }
+      </style>
+    </head>
+    <body>
+      <header>
+        <h1>Alnoor — Hi, $nickname</h1>
+        <a class="logout" href="?logout=1">Logout</a>
+      </header>
+      <nav>
+        <button class="active" onclick="showTab('order')">Order</button>
+        <button onclick="showTab('myorder')">My Order</button>
+        <button onclick="showTab('summary')">Summary</button>
+      </nav>
+
+      <!-- ORDER VIEW -->
+      <div id="view-order" class="view active">
+        <div id="menu-container"></div>
+        <div class="order-footer">
+          <strong>Total: <span id="totalPrice">0</span> HUF</strong>
+          <button id="submitBtn" onclick="submitOrder()">Submit Order</button>
+        </div>
+        <div id="submitMsg"></div>
+      </div>
+
+      <!-- MY ORDER VIEW -->
+      <div id="view-myorder" class="view">
+        <div id="myorder-container"></div>
+      </div>
+
+      <!-- SUMMARY VIEW -->
+      <div id="view-summary" class="view">
+        <div id="summaryDate"></div>
+        <div id="summary-container"></div>
+      </div>
+
+      <script>
+      const MENU = $menuJs;
+      // qty map: dish name -> qty
+      const qty = {};
+
+      function showTab(name) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById('view-' + name).classList.add('active');
+        event.target.classList.add('active');
+        if (name === 'myorder') loadMyOrder();
+        if (name === 'summary') loadSummary();
+      }
+
+      function buildMenu() {
+        const container = document.getElementById('menu-container');
+        container.innerHTML = '';
+        for (const [cat, dishes] of Object.entries(MENU)) {
+          const sec = document.createElement('div');
+          sec.className = 'category';
+          sec.innerHTML = '<h2>' + cat + '</h2>';
+          for (const [dish, price] of Object.entries(dishes)) {
+            if (!qty[dish]) qty[dish] = 0;
+            const row = document.createElement('div');
+            row.className = 'dish-row';
+            const escaped = esc(dish);
+            row.innerHTML =
+              '<span class="dish-name">' + dish + '</span>' +
+              '<span class="dish-price">' + price + ' HUF</span>' +
+              '<div class="qty-ctrl">' +
+                '<button onclick="changeQty(\'' + escaped + '\', -1)">−</button>' +
+                '<span id="qty-' + escaped + '">' + qty[dish] + '</span>' +
+                '<button onclick="changeQty(\'' + escaped + '\', 1)">+</button>' +
+              '</div>';
+            sec.appendChild(row);
+          }
+          container.appendChild(sec);
+        }
+        updateTotal();
+      }
+
+      function esc(s) { return s.replace(/'/g, "\\'"); }
+
+      function changeQty(dish, delta) {
+        qty[dish] = Math.max(0, Math.min(9, (qty[dish] || 0) + delta));
+        const el = document.getElementById('qty-' + dish);
+        if (el) el.textContent = qty[dish];
+        updateTotal();
+      }
+
+      function updateTotal() {
+        let total = 0;
+        for (const [cat, dishes] of Object.entries(MENU)) {
+          for (const [dish, price] of Object.entries(dishes)) {
+            total += (qty[dish] || 0) * price;
+          }
+        }
+        document.getElementById('totalPrice').textContent = total.toLocaleString('hu-HU');
+      }
+
+      async function loadExistingOrder() {
+        const res = await fetch('?action=my_order');
+        const data = await res.json();
+        if (data.items) {
+          data.items.forEach(item => { qty[item.dish] = item.qty; });
+          // Re-render qty displays
+          for (const dish of Object.keys(qty)) {
+            const el = document.getElementById('qty-' + dish);
+            if (el) el.textContent = qty[dish];
+          }
+          updateTotal();
+        }
+      }
+
+      async function submitOrder() {
+        const btn = document.getElementById('submitBtn');
+        const msg = document.getElementById('submitMsg');
+        const items = [];
+        for (const [cat, dishes] of Object.entries(MENU)) {
+          for (const [dish, price] of Object.entries(dishes)) {
+            if ((qty[dish] || 0) > 0) {
+              items.push({ dish, price, qty: qty[dish] });
+            }
+          }
+        }
+        if (items.length === 0) { msg.textContent = 'Add at least one dish.'; msg.style.color='red'; return; }
+        btn.disabled = true;
+        msg.textContent = '';
+        const res = await fetch('?action=save_order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items })
+        });
+        const data = await res.json();
+        btn.disabled = false;
+        if (data.ok) {
+          msg.style.color = 'green';
+          msg.textContent = 'Order saved!';
+        } else {
+          msg.style.color = 'red';
+          msg.textContent = data.error || 'Error saving order.';
+        }
+      }
+
+      async function loadMyOrder() {
+        const container = document.getElementById('myorder-container');
+        container.innerHTML = 'Loading...';
+        const res = await fetch('?action=my_order');
+        const data = await res.json();
+        if (!data.items) {
+          container.innerHTML = '<p class="empty-msg">You have no order for today. Go to the Order tab to place one.</p>';
+          return;
+        }
+        let rows = data.items.map(i =>
+          '<tr><td>' + i.dish + '</td><td>' + i.qty + '</td><td>' + (i.price * i.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
+        ).join('');
+        container.innerHTML =
+          '<table>' +
+          '<thead><tr><th>Dish</th><th>Qty</th><th>Subtotal</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+          '<tfoot><tr class="total-row"><td colspan="2">Total</td><td>' + data.total.toLocaleString('hu-HU') + ' HUF</td></tr></tfoot>' +
+          '</table>';
+      }
+
+      async function loadSummary() {
+        const container = document.getElementById('summary-container');
+        const dateEl = document.getElementById('summaryDate');
+        container.innerHTML = 'Loading...';
+        dateEl.textContent = 'Date: ' + new Date().toLocaleDateString('hu-HU');
+        const res = await fetch('?action=today_summary');
+        const data = await res.json();
+        if (!data.dishes || data.dishes.length === 0) {
+          container.innerHTML = '<p class="empty-msg">No orders placed yet today.</p>';
+          return;
+        }
+        let rows = data.dishes.map(d =>
+          '<tr><td>' + d.dish + '</td><td>' + d.qty + '</td><td>' + (d.price * d.qty).toLocaleString('hu-HU') + ' HUF</td></tr>'
+        ).join('');
+        container.innerHTML =
+          '<table>' +
+          '<thead><tr><th>Dish</th><th>Qty</th><th>Subtotal</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+          '<tfoot><tr class="total-row"><td colspan="2">Total</td><td>' + data.total.toLocaleString('hu-HU') + ' HUF</td></tr></tfoot>' +
+          '</table>';
+      }
+
+      // Init
+      buildMenu();
+      loadExistingOrder();
+      </script>
+    </body>
+    </html>
+    HTML;
+}
