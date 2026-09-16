@@ -1,0 +1,89 @@
+{
+  "Chicken Dishes": {
+    "Chicken Curry": 2060,
+    "Chicken Tikka Massala": 2060,
+    "Butter Chicken": 2060,
+    "Chicken Madras": 2060,
+    "Chicken Korma": 2060,
+    "Chicken Jalfrezi": 2060,
+    "Chicken Vindaloo": 2060,
+    "Chicken Chole": 2060,
+    "Mango Chicken": 2060,
+    "Spinach Chicken": 2060
+  },
+  "Lamb": {
+    "Lamb Curry": 2990,
+    "Lamb Tikka Masala": 2990,
+    "Lamb Korma": 2990,
+    "Lamb Vindaloo": 2990,
+    "Lamb Madras": 2990,
+    "Kath-Mandoo Lamb": 2990,
+    "Palak Ghost": 2990
+  },
+  "Prawn": {
+    "Prawn Curry": 2990,
+    "Prawn Tikka Masala": 2990,
+    "Prawn Vindaloo": 2990
+  },
+  "Paneer Dishes": {
+    "Paneer Tikka Masala": 2060,
+    "Paneer Makhani": 2060,
+    "Palak Paneer": 2060,
+    "Matar Paneer": 2060,
+    "Paneer Korma": 2060
+  },
+  "Vegetable Dishes": {
+    "Punjabi Cholay": 1890,
+    "Dal Tadka": 1890,
+    "Mix Vegetable Curry": 1890,
+    "Vegetable Jalfrezi": 1890,
+    "Vegetable Korma": 1890,
+    "Rajma Curry": 1890,
+    "Palak Chole": 1890,
+    "Aloo Palak": 1890
+  },
+  "Tandori": {
+    "Tandoori Tikka": 2990,
+    "Malai Tikka": 2990
+  },
+  "Special Items": {
+    "Chicken Biryani": 2590,
+    "Vegetable Biryani": 2590,
+    "Lamb Biryani": 3690,
+    "Lahori Chicken Karahi (250g)": 3000,
+    "White Chicken Karahi (250g)": 3000,
+    "Lamb White Karahi": 6000,
+    "Lahori Lamb Karahi": 6000
+  },
+  "Sides Dishes": {
+    "Basmati Rice": 540,
+    "Cumin Rice": 540,
+    "Turmeric Rice": 540,
+    "Peas Rice": 540
+  },
+  "Chapati": {
+    "Plain Chapati": 340,
+    "Butter Chapati": 390,
+    "Garlic Chapati": 390
+  },
+  "Tea": {
+    "Masala Tea": 600,
+    "Doodh Patti": 600
+  },
+  "Dessert": {
+    "Gulab Jamun (2pcs)": 750,
+    "Khoya Kulfi": 750
+  },
+  "Drinks": {
+    "Mango Lassi 0.3l": 590,
+    "Sweet Lassi 0.3l": 590,
+    "Salty Lassi 0.3l": 590,
+    "Coke 0.33l": 490,
+    "Coke Zero 0.33l": 490,
+    "Fanta 0.33l": 490,
+    "Sprite 0.33l": 490,
+    "Kinley 0.25l": 490,
+    "Bubble Water 0.5l": 490,
+    "Still Water 0.5l": 490
+  }
+}
