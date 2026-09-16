@@ -25,6 +25,25 @@ if ($action !== null) {
     exit;
 }
 
+// Login POST handler
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_SESSION['authenticated'])) {
+    $password = $_POST['password'] ?? '';
+    $nickname = sanitizeNickname($_POST['nickname'] ?? '');
+    $error = '';
+    if ($nickname === '') {
+        $error = 'Nickname is required.';
+    } elseif (!hash_equals(SHARED_PASSWORD, $password)) {
+        $error = 'Wrong password.';
+    } else {
+        $_SESSION['authenticated'] = true;
+        $_SESSION['nickname'] = $nickname;
+        header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+        exit;
+    }
+    renderLogin($error);
+    exit;
+}
+
 // UI routing
 if (!isset($_SESSION['authenticated'])) {
     renderLogin();
@@ -63,5 +82,38 @@ function sanitizeNickname(string $nick): string {
 function handleMyOrder(): void    { echo json_encode(['items' => []]); }
 function handleTodaySummary(): void { echo json_encode(['dishes' => []]); }
 function handleSaveOrder(): void  { echo json_encode(['ok' => true]); }
-function renderLogin(): void      { echo '<h1>Login</h1>'; }
+function renderLogin(string $error = ''): void {
+    $errorHtml = $error ? '<p class="error">' . htmlspecialchars($error) . '</p>' : '';
+    echo <<<HTML
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Alnoor — Login</title>
+      <style>
+        body { font-family: sans-serif; max-width: 400px; margin: 80px auto; padding: 0 1rem; }
+        h1 { margin-bottom: 1.5rem; }
+        label { display: block; margin-top: 1rem; font-weight: bold; }
+        input { width: 100%; padding: .5rem; margin-top: .25rem; box-sizing: border-box; font-size: 1rem; }
+        button { margin-top: 1.5rem; width: 100%; padding: .75rem; font-size: 1rem; cursor: pointer; }
+        .error { color: red; margin-top: 1rem; }
+      </style>
+    </head>
+    <body>
+      <h1>Alnoor Order</h1>
+      <form method="post">
+        <label>Nickname
+          <input type="text" name="nickname" maxlength="32" required autofocus>
+        </label>
+        <label>Password
+          <input type="password" name="password" required>
+        </label>
+        $errorHtml
+        <button type="submit">Enter</button>
+      </form>
+    </body>
+    </html>
+    HTML;
+}
 function renderApp(): void        { echo '<h1>App</h1>'; }
