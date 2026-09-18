@@ -238,7 +238,7 @@ function renderApp(): void {
         nav button.active { border-color: #b03; background: #b03; color: #fff; }
         .view { display: none; }
         .view.active { display: block; }
-        .category { margin-bottom: 1.5rem; border-radius: 8px; overflow: hidden; }
+        .category { margin-bottom: 1.5rem; border-radius: 8px; }
         .category h2 { font-size: 1.05rem; font-weight: bold; padding: .5rem .75rem; margin: 0 0 .25rem 0; background: #b03; color: #fff; letter-spacing: .03em; }
         .dish-row { padding: .35rem .75rem; }
         .category:nth-child(2n) h2 { background: #1a6fa8; }
@@ -264,9 +264,16 @@ function renderApp(): void {
         a.logout { font-size: .85rem; color: #666; text-decoration: none; }
         a.logout:hover { text-decoration: underline; }
         #summaryDate { color: #888; font-size: .85rem; margin-bottom: 1rem; }
+        .tip-icon { cursor: help; color: #888; font-size: .8rem; margin-left: .25rem; line-height: 1; user-select: none; }
+        #tooltip { display: none; position: fixed; background: #222; color: #fff; font-size: .8rem;
+          padding: .4rem .6rem; border-radius: 4px; width: 240px; white-space: normal; line-height: 1.4;
+          z-index: 9999; pointer-events: none; }
+        #tooltip::before { content: ''; position: absolute; bottom: 100%; left: 16px;
+          border: 5px solid transparent; border-bottom-color: #222; }
       </style>
     </head>
     <body>
+      <div id="tooltip"></div>
       <header>
         <h1>Al Noor — Hi, $nickname</h1>
         <a class="logout" href="?logout=1">Logout</a>
@@ -299,7 +306,26 @@ function renderApp(): void {
       </div>
 
       <script>
-      const MENU = $menuJs;
+      const MENU_RAW = $menuJs;
+
+      // Normalize: values may be plain int or {price, description}
+      // description may be a string or {en, hu}
+      const MENU = {};
+      for (const [cat, dishes] of Object.entries(MENU_RAW)) {
+        MENU[cat] = {};
+        for (const [dish, val] of Object.entries(dishes)) {
+          MENU[cat][dish] = typeof val === 'object' ? val : { price: val };
+        }
+      }
+
+      function tipContent(desc) {
+        if (!desc) return null;
+        if (typeof desc === 'string') return desc;
+        const lines = [];
+        if (desc.en) lines.push('🇬🇧 ' + desc.en);
+        if (desc.hu) lines.push('🇭🇺 ' + desc.hu);
+        return lines.join('||');
+      }
 
       function escHtml(s) {
         const d = document.createElement('div');
@@ -325,15 +351,19 @@ function renderApp(): void {
         for (const [cat, dishes] of Object.entries(MENU)) {
           const sec = document.createElement('div');
           sec.className = 'category';
-          sec.innerHTML = '<h2>' + cat + '</h2>';
-          for (const [dish, price] of Object.entries(dishes)) {
+          sec.innerHTML = '<h2>' + escHtml(cat) + '</h2>';
+          for (const [dish, info] of Object.entries(dishes)) {
             if (!qty[dish]) qty[dish] = 0;
             const row = document.createElement('div');
             row.className = 'dish-row';
             const escaped = esc(dish);
+            const tc = tipContent(info.description);
+            const tipHtml = tc
+              ? '<span class="tip-icon" tabindex="0" data-tip="' + escHtml(tc) + '">ⓘ</span>'
+              : '';
             row.innerHTML =
-              '<span class="dish-name">' + dish + '</span>' +
-              '<span class="dish-price">' + price + ' HUF</span>' +
+              '<span class="dish-name">' + escHtml(dish) + tipHtml + '</span>' +
+              '<span class="dish-price">' + info.price + ' HUF</span>' +
               '<div class="qty-ctrl">' +
                 '<button onclick="changeQty(\'' + escaped + '\', -1)">−</button>' +
                 '<span id="qty-' + escaped + '">' + qty[dish] + '</span>' +
@@ -358,8 +388,8 @@ function renderApp(): void {
       function updateTotal() {
         let total = 0;
         for (const [cat, dishes] of Object.entries(MENU)) {
-          for (const [dish, price] of Object.entries(dishes)) {
-            total += (qty[dish] || 0) * price;
+          for (const [dish, info] of Object.entries(dishes)) {
+            total += (qty[dish] || 0) * info.price;
           }
         }
         document.getElementById('totalPrice').textContent = total.toLocaleString('hu-HU');
@@ -390,9 +420,9 @@ function renderApp(): void {
         const msg = document.getElementById('submitMsg');
         const items = [];
         for (const [cat, dishes] of Object.entries(MENU)) {
-          for (const [dish, price] of Object.entries(dishes)) {
+          for (const [dish, info] of Object.entries(dishes)) {
             if ((qty[dish] || 0) > 0) {
-              items.push({ dish, price, qty: qty[dish] });
+              items.push({ dish, price: info.price, qty: qty[dish] });
             }
           }
         }
@@ -476,6 +506,58 @@ function renderApp(): void {
           if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy order', 1500); }
         });
       }
+
+      // Tooltip
+      const tooltip = document.getElementById('tooltip');
+      let activeIcon = null;
+
+      function showTip(el) {
+        activeIcon = el;
+        tooltip.innerHTML = el.dataset.tip.split('||').map(escHtml).join('<br>');
+        tooltip.style.display = 'block';
+        const r = el.getBoundingClientRect();
+        const tw = tooltip.offsetWidth;
+        let left = r.left + r.width / 2 - 16;
+        if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+        if (left < 8) left = 8;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = (r.bottom + 8) + 'px';
+      }
+
+      function hideTip() {
+        tooltip.style.display = 'none';
+        activeIcon = null;
+      }
+
+      // Mouse
+      document.addEventListener('mouseover', e => {
+        const el = e.target.closest('[data-tip]');
+        if (el) showTip(el); else if (!tooltip.contains(e.target)) hideTip();
+      });
+      document.addEventListener('mouseout', e => {
+        if (e.target.closest('[data-tip]') && !e.relatedTarget?.closest('[data-tip]')) hideTip();
+      });
+
+      // Keyboard
+      document.addEventListener('focus', e => {
+        const el = e.target.closest('[data-tip]');
+        if (el) showTip(el);
+      }, true);
+      document.addEventListener('blur', e => {
+        if (e.target.closest('[data-tip]')) hideTip();
+      }, true);
+
+      // Touch: tap icon to toggle, tap anywhere else to dismiss
+      document.addEventListener('touchstart', e => {
+        const el = e.target.closest('[data-tip]');
+        if (el) {
+          if (activeIcon === el) { hideTip(); }
+          else { showTip(el); }
+          e.preventDefault();
+        } else {
+          hideTip();
+        }
+      }, { passive: false });
 
       // Init
       buildMenu();
