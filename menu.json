@@ -1,65 +1,61 @@
 {
   "Chicken": {
-    "Chicken Curry": { "price": 2060, "description": { "en": "Chicken cubes cooked in homemade spicy curry sauce.", "hu": "Házi fűszeres curry szószban főtt csirke." } },
-    "Chicken Tikka Massala": { "price": 2060, "description": { "en": "Chicken cubes cooked in homemade tomato-based sauce with capsicum.", "hu": "Csirkeszeletek házi paradicsomos szószban főtt paprikával." } },
-    "Butter Chicken": { "price": 2060, "description": { "en": "Chicken cubes cooked in very rich creamy homemade sweet curry.", "hu": "Nagyon gazdag krémes házi édes curryben főtt csirke." } },
-    "Chicken Madras": { "price": 2060, "description": { "en": "Chicken cubes cooked in homemade spicy tomato paste and madras sauce.", "hu": "Házi fűszeres paradicsompürében és madras szószban főtt csirke." } },
-    "Chicken Korma": { "price": 2060, "description": { "en": "Chicken cubes cooked in a rich, homemade cashew and cream-based sauce.", "hu": "Gazdag, házi kesudió és tejszín alapú szószban főtt csirke." } },
-    "Chicken Jalfrezi": { "price": 2060, "description": { "en": "A mixture of chicken pieces, bell peppers, egg, and onion.", "hu": "Egy paradicsom alapú curry, amely kicsontozott csirkedarabokból, kaliforniai paprikából, tojásból és hagymából készül." } },
-    "Chicken Vindaloo": { "price": 2060, "description": { "en": "Chicken cubes cooked in a spicy homemade tomato and vindaloo sauce.", "hu": "Fűszeres házi paradicsom és vindaloo szószban főtt csirke." } },
-    "Chicken Chole": { "price": 2060, "description": { "en": "A unique and tasty combination of chicken and chickpeas.", "hu": "A Chicken Chole a csirke és a csicseriborsó egyedi és ízletes kombinációja." } },
-    "Mango Chicken": { "price": 2060, "description": { "en": "Chicken cubes cooked in mango puree and tomato-based sweet and creamy curry.", "hu": "Csirke mangópürével, paradicsom alapú édes és krémes curryben." } },
-    "Spinach Chicken": { "price": 2060, "description": { "en": "Chicken pieces and grounded spinach cooked in homemade gravy and cream.", "hu": "Csirkedarabok és őrölt spenót házi szószban főzve." } }
+    "Chicken Curry": { "price": 2260, "description": { "en": "Chicken cubes cooked in homemade spicy curry sauce.", "hu": "Házi fűszeres curry szószban főtt csirke." } },
+    "Chicken Tikka Massala": { "price": 2260, "description": { "en": "Chicken cubes cooked in homemade tomato-based sauce with capsicum.", "hu": "Csirkeszeletek házi paradicsomos szószban főtt paprikával." } },
+    "Butter Chicken": { "price": 2260, "description": { "en": "Chicken cubes cooked in very rich creamy homemade sweet curry.", "hu": "Nagyon gazdag krémes házi édes curryben főtt csirke." } },
+    "Chicken Madras": { "price": 2260, "description": { "en": "Chicken cubes cooked in homemade spicy tomato paste and madras sauce.", "hu": "Házi fűszeres paradicsompürében és madras szószban főtt csirke." } },
+    "Chicken Korma": { "price": 2260, "description": { "en": "Chicken cubes cooked in a rich, homemade cashew and cream-based sauce.", "hu": "Gazdag, házi kesudió és tejszín alapú szószban főtt csirke." } },
+    "Chicken Jalfrezi": { "price": 2260, "description": { "en": "A mixture of chicken pieces, bell peppers, egg, and onion.", "hu": "Egy paradicsom alapú curry, amely kicsontozott csirkedarabokból, kaliforniai paprikából, tojásból és hagymából készül." } },
+    "Chicken Vindaloo": { "price": 2260, "description": { "en": "Chicken cubes cooked in a spicy homemade tomato and vindaloo sauce.", "hu": "Fűszeres házi paradicsom és vindaloo szószban főtt csirke." } },
+    "Chicken Chole": { "price": 2260, "description": { "en": "A unique and tasty combination of chicken and chickpeas.", "hu": "A Chicken Chole a csirke és a csicseriborsó egyedi és ízletes kombinációja." } },
+    "Mango Chicken": { "price": 2260, "description": { "en": "Chicken cubes cooked in mango puree and tomato-based sweet and creamy curry.", "hu": "Csirke mangópürével, paradicsom alapú édes és krémes curryben." } },
+    "Spinach Chicken": { "price": 2260, "description": { "en": "Chicken pieces and grounded spinach cooked in homemade gravy and cream.", "hu": "Csirkedarabok és őrölt spenót házi szószban főzve." } }
   },
   "Lamb": {
-    "Lamb Curry": { "price": 2990, "description": { "en": "Lamb in a spicy homemade curry sauce.", "hu": "Bárányhús fűszeres házi curry szószban." } },
-    "Lamb Tikka Masala": { "price": 2990, "description": { "en": "Lamb cooked in slightly spicy homemade tomato and onion sauce with capsicum.", "hu": "Bárányhús nagyon forró házi paradicsom-hagymás szószban paprikával." } },
-    "Lamb Korma": { "price": 2990, "description": { "en": "Lamb cooked in coconut, cashew-based cream sauce.", "hu": "Bárányhús gazdag házi kesudió-tejszínes szószban." } },
-    "Lamb Vindaloo": { "price": 2990, "description": { "en": "Lamb cooked in a very hot tomato-based sauce and homemade vindaloo sauce.", "hu": "Bárányhús nagyon csípős paradicsom alapú szószban és házi vindaloo szósszal." } },
-    "Lamb Madras": { "price": 2990, "description": { "en": "Lamb madras curry cooked in homemade spicy tomato paste and madras sauce.", "hu": "A bárány madras curry házi fűszeres paradicsompürében és madras szószban főz." } },
-    "Kath-Mandoo Lamb": { "price": 2990, "description": { "en": "Lamb with red lentils and spicy curry.", "hu": "Bárányhús vörös lencsével és fűszeres curryvel." } },
-    "Palak Ghost": { "price": 2990, "description": { "en": "A popular curry made with lamb lathered in spices and grounded spinach.", "hu": "Palak gosht egy népszerű curry bárányhúsból fűszerekkel és őrölt spenóttal." } }
+    "Lamb Curry": { "price": 3300, "description": { "en": "Lamb in a spicy homemade curry sauce.", "hu": "Bárányhús fűszeres házi curry szószban." } },
+    "Lamb Tikka Masala": { "price": 3300, "description": { "en": "Lamb cooked in slightly spicy homemade tomato and onion sauce with capsicum.", "hu": "Bárányhús nagyon forró házi paradicsom-hagymás szószban paprikával." } },
+    "Lamb Korma": { "price": 3300, "description": { "en": "Lamb cooked in coconut, cashew-based cream sauce.", "hu": "Bárányhús gazdag házi kesudió-tejszínes szószban." } },
+    "Lamb Vindaloo": { "price": 3300, "description": { "en": "Lamb cooked in a very hot tomato-based sauce and homemade vindaloo sauce.", "hu": "Bárányhús nagyon csípős paradicsom alapú szószban és házi vindaloo szósszal." } },
+    "Lamb Madras": { "price": 3300, "description": { "en": "Lamb madras curry cooked in homemade spicy tomato paste and madras sauce.", "hu": "A bárány madras curry házi fűszeres paradicsompürében és madras szószban főz." } },
+    "Palak Ghost": { "price": 3300, "description": { "en": "A popular curry made with lamb lathered in spices and grounded spinach.", "hu": "Palak gosht egy népszerű curry bárányhúsból fűszerekkel és őrölt spenóttal." } }
   },
   "Prawn": {
-    "Prawn Curry": { "price": 2990, "description": { "en": "Prawn cooked in a spicy homemade curry sauce.", "hu": "Fűszeres házi curry szószban főtt garnélarák." } },
-    "Prawn Tikka Masala": { "price": 2990, "description": { "en": "Prawn cooked in very hot homemade tomato and tikka sauce with capsicum.", "hu": "Nagyon meleg házi készítésű paradicsom- és tikka szószban főtt garnéla paprika." } },
-    "Prawn Vindaloo": { "price": 2990, "description": { "en": "Prawn cooked in spicy homemade tomato and vindaloo sauce.", "hu": "Fűszeres házi paradicsom és vindaloo szószban főtt garnélarák." } }
+    "Prawn Curry": { "price": 3300, "description": { "en": "Prawn cooked in a spicy homemade curry sauce.", "hu": "Fűszeres házi curry szószban főtt garnélarák." } },
+    "Prawn Tikka Masala": { "price": 3300, "description": { "en": "Prawn cooked in very hot homemade tomato and tikka sauce with capsicum.", "hu": "Nagyon meleg házi készítésű paradicsom- és tikka szószban főtt garnéla paprika." } },
+    "Prawn Vindaloo": { "price": 3300, "description": { "en": "Prawn cooked in spicy homemade tomato and vindaloo sauce.", "hu": "Fűszeres házi paradicsom és vindaloo szószban főtt garnélarák." } }
   },
   "Paneer": {
-    "Paneer Tikka Masala": { "price": 2060, "description": { "en": "Cooked in a spicy gravy with homemade paneer cubes and capsicum.", "hu": "Fűszeres mártásban főtt csirke, házi készítésű paneer kockák és paprika." } },
-    "Paneer Makhani": { "price": 2060, "description": { "en": "A slightly sweet dish of paneer with paneer cubes, tomatoes, cashews, spices and cream.", "hu": "A Paneer Makhani egy enyhén édes paneer étel. paneer kockával, paradicsommal, kesudióval, fűszerekkel és tejszínnel." } },
-    "Palak Paneer": { "price": 2060, "description": { "en": "A mixture of homemade paneer cubes with grounded spinach.", "hu": "A Palak paneer házi készítésű panelkockák és őrölt spenót keveréke." } },
-    "Matar Paneer": { "price": 2060, "description": { "en": "A mixture of homemade paneer cubes and green peas cooked in a spicy and flavorsome curry.", "hu": "A Matar paneer házi készítésű paneer kockák és borsó keveréke fűszeres és ízletes curryben." } },
-    "Paneer Korma": { "price": 2060, "description": { "en": "A super-rich and delicious curry where paneer cubes are added in a gravy with cashew sauce and coconut.", "hu": "A Paneer Korma egy szuper gazdag és zamatos curry, amelyhez Paneer kockákat adnak hozzá a kesudió- és kókuszdió mártáshoz." } }
+    "Paneer Tikka Masala": { "price": 2260, "description": { "en": "Cooked in a spicy gravy with homemade paneer cubes and capsicum.", "hu": "Fűszeres mártásban főtt csirke, házi készítésű paneer kockák és paprika." } },
+    "Paneer Makhani": { "price": 2260, "description": { "en": "A slightly sweet dish of paneer with paneer cubes, tomatoes, cashews, spices and cream.", "hu": "A Paneer Makhani egy enyhén édes paneer étel. paneer kockával, paradicsommal, kesudióval, fűszerekkel és tejszínnel." } },
+    "Palak Paneer": { "price": 2260, "description": { "en": "A mixture of homemade paneer cubes with grounded spinach.", "hu": "A Palak paneer házi készítésű panelkockák és őrölt spenót keveréke." } },
+    "Matar Paneer": { "price": 2260, "description": { "en": "A mixture of homemade paneer cubes and green peas cooked in a spicy and flavorsome curry.", "hu": "A Matar paneer házi készítésű paneer kockák és borsó keveréke fűszeres és ízletes curryben." } },
+    "Paneer Korma": { "price": 2260, "description": { "en": "A super-rich and delicious curry where paneer cubes are added in a gravy with cashew sauce and coconut.", "hu": "A Paneer Korma egy szuper gazdag és zamatos curry, amelyhez Paneer kockákat adnak hozzá a kesudió- és kókuszdió mártáshoz." } }
   },
   "Vegetable": {
-    "Punjabi Cholay": { "price": 1890, "description": { "en": "Chickpeas cooked to perfection with various spices, homemade sauces, and herbs.", "hu": "Csicseriborsó tökéletesre főtt különféle fűszerekkel, házi szószokkal és fűszernövényekkel." } },
-    "Dal Tadka": { "price": 1890, "description": { "en": "A popular south asian lentil dish made with split red lentils.", "hu": "A Dal Tadka egy népszerű dél-ázsiai lencseétel, amelyet hasított vörös lencsével készítenek." } },
-    "Mix Vegetable Curry": { "price": 1890, "description": { "en": "The dish is loaded with mixed vegetables cooked with homemade sauce.", "hu": "Az edénybe keverjük össze a házi szósszal főtt zöldségeket." } },
-    "Vegetable Jalfrezi": { "price": 1890, "description": { "en": "The dish is loaded with mix vegetables and egg cooked with homemade sauce.", "hu": "Az ételt megtöltjük Mix zöldségekkel és házi szósszal főtt tojással." } },
-    "Vegetable Korma": { "price": 1890, "description": { "en": "Mix vegetables cooked in a rich, homemade cashew and cream-based sauce.", "hu": "Gazdag, házi kesudió és tejszín alapú szószban főtt zöldségeket." } },
-    "Rajma Curry": { "price": 1890, "description": { "en": "A south Asian curried dish made with kidney beans, onions, tomatoes, spices, and herbs." } },
-    "Palak Chole": { "price": 1890, "description": { "en": "A delicious curry made with spinach (palak) and white chickpeas (chana)." } },
-    "Aloo Palak": { "price": 1890, "description": { "en": "A delicious vegetarian dish with boiled potatoes in a green, smooth, creamy, and spicy spinach gravy." } }
-  },
-  "Tandori": {
-    "Tandoori Tikka": { "price": 2990 },
-    "Malai Tikka": { "price": 2990 }
+    "Punjabi Cholay": { "price": 2090, "description": { "en": "Chickpeas cooked to perfection with various spices, homemade sauces, and herbs.", "hu": "Csicseriborsó tökéletesre főtt különféle fűszerekkel, házi szószokkal és fűszernövényekkel." } },
+    "Dal Tadka": { "price": 2090, "description": { "en": "A popular south asian lentil dish made with split red lentils.", "hu": "A Dal Tadka egy népszerű dél-ázsiai lencseétel, amelyet hasított vörös lencsével készítenek." } },
+    "Mix Vegetable Curry": { "price": 2090, "description": { "en": "The dish is loaded with mixed vegetables cooked with homemade sauce.", "hu": "Az edénybe keverjük össze a házi szósszal főtt zöldségeket." } },
+    "Vegetable Jalfrezi": { "price": 2090, "description": { "en": "The dish is loaded with mix vegetables and egg cooked with homemade sauce.", "hu": "Az ételt megtöltjük Mix zöldségekkel és házi szósszal főtt tojással." } },
+    "Vegetable Korma": { "price": 2090, "description": { "en": "Mix vegetables cooked in a rich, homemade cashew and cream-based sauce.", "hu": "Gazdag, házi kesudió és tejszín alapú szószban főtt zöldségeket." } },
+    "Rajma Curry": { "price": 2090, "description": { "en": "A south Asian curried dish made with kidney beans, onions, tomatoes, spices, and herbs." } },
+    "Aloo Palak": { "price": 2090, "description": { "en": "A delicious vegetarian dish with boiled potatoes in a green, smooth, creamy, and spicy spinach gravy." } }
   },
   "Special Items": {
-    "Chicken Biryani": { "price": 2590, "description": { "en": "Specially seasoned chicken dish with rice." } },
-    "Vegetable Biryani": { "price": 2590, "description": { "en": "One dish with vegetables and rice with special spices." } },
-    "Lamb Biryani": { "price": 3690, "description": { "en": "Specially seasoned lamb dish with rice." } },
-    "Lahori Chicken Karahi (250g)": { "price": 3000, "description": { "en": "Best famous street food in Pakistan. Boneless chicken cooked in tomato, yogurt, and very light spices." } },
-    "White Chicken Karahi (250g)": { "price": 3000, "description": { "en": "Famous street food in Pakistan. Boneless chicken cooked with onion yogurt, and very less spices." } },
-    "Lamb White Karahi": { "price": 6000, "description": { "en": "Famous Pakistani street food, spicy lamb with green chilies, coriander, ginger, and garlic." } },
-    "Lahori Lamb Karahi": { "price": 6000, "description": { "en": "Spicy lamb in yogurt sauce, with fresh tomatoes and herbs." } }
+    "Chicken Biryani": { "price": 2790, "description": { "en": "Specially seasoned chicken dish with rice.", "hu": "Csirke basmati rizzsel, sült hagymával és egész fűszerekkel rétegezve, dum-módon párolva." } },
+    "Vegetable Biryani": { "price": 2790, "description": { "en": "One dish with vegetables and rice with special spices.", "hu": "Szezonális zöldségek basmati rizzsel, sült hagymával és egész fűszerekkel rétegezve, dum-módon párolva." } },
+    "Lamb Biryani": { "price": 3690, "description": { "en": "Specially seasoned lamb dish with rice.", "hu": "Csont nélküli bárányhús basmati rizzsel, sült hagymával és egész fűszerekkel rétegezve, dum-módon párolva." } },
+    "Lahori Chicken Karahi (250g)": { "price": 3000, "description": { "en": "Best famous street food in Pakistan. Boneless chicken cooked in tomato, yogurt, and very light spices.", "hu": "Csont nélküli csirke paradicsommal, hagymával, joghurttal és fekete borssal, hagyományos, zamatos masalában főzve." } },
+    "White Chicken Karahi (250g)": { "price": 3000, "description": { "en": "Famous street food in Pakistan. Boneless chicken cooked with onion yogurt, and very less spices.", "hu": "Csont nélküli csirke hagymával, joghurttal, tejszínnel, fehér és fekete borssal lassan főzve, gazdag, bársonyos fehér masalában." } },
+    "Lamb White Karahi": { "price": 6000, "description": { "en": "Famous Pakistani street food, spicy lamb with green chilies, coriander, ginger, and garlic.", "hu": "Csont nélküli bárányhús hagymával, joghurttal, tejszínnel, fehér és fekete borssal lassan főzve, gazdag, bársonyos fehér masalában." } },
+    "Lahori Lamb Karahi": { "price": 6000, "description": { "en": "Spicy lamb in yogurt sauce, with fresh tomatoes and herbs.", "hu": "Csont nélküli bárányhús paradicsommal, hagymával, joghurttal és fekete borssal, hagyományos, zamatos masalában főzve." } },
+    "Chicken Haleem": { "price": 3500, "description": { "hu": "Lassan főzött sűrű búza-, árpa- és lencsekása fűszerekkel, pirított hagymával, korianderrel és citrommal." } }
   },
   "Sides": {
     "Basmati Rice": { "price": 540 },
     "Cumin Rice": { "price": 540 },
     "Turmeric Rice": { "price": 540 },
-    "Peas Rice": { "price": 540 }
+    "Peas Rice": { "price": 540 },
+    "Lemon Rice": { "price": 540 }
   },
   "Chapati": {
     "Plain Chapati": { "price": 340 },
@@ -67,23 +63,39 @@
     "Garlic Chapati": { "price": 390 }
   },
   "Tea": {
-    "Masala Tea": { "price": 600 },
-    "Doodh Patti": { "price": 600 }
+    "Masala Tea": { "price": 800 },
+    "Doodh Patti": { "price": 800 }
   },
   "Dessert": {
-    "Gulab Jamun (2pcs)": { "price": 750 },
-    "Khoya Kulfi": { "price": 750 }
+    "Gulab Jamun (2pcs)": { "price": 750 }
   },
   "Drinks": {
-    "Mango Lassi 0.3l": { "price": 590 },
-    "Sweet Lassi 0.3l": { "price": 590 },
-    "Salty Lassi 0.3l": { "price": 590 },
-    "Coke 0.33l": { "price": 490 },
-    "Coke Zero 0.33l": { "price": 490 },
-    "Fanta 0.33l": { "price": 490 },
-    "Sprite 0.33l": { "price": 490 },
-    "Kinley 0.25l": { "price": 490 },
-    "Bubble Water 0.5l": { "price": 490 },
-    "Still Water 0.5l": { "price": 490 }
+    "Mango Lassi 0.3l": { "price": 640 },
+    "Sweet Lassi 0.3l": { "price": 640 },
+    "Salty Lassi 0.3l": { "price": 640 },
+    "Coke 0.33l": { "price": 540 },
+    "Coke Zero 0.33l": { "price": 540 },
+    "Fanta 0.33l": { "price": 540 },
+    "Sprite 0.33l": { "price": 540 },
+    "Kinley 0.25l": { "price": 540 },
+    "Bubble Water 0.5l": { "price": 540 },
+    "Still Water 0.5l": { "price": 540 }
+  },
+  "Soups": {
+    "Lentil Soup": { "price": 790 },
+    "Tomato Soup": { "price": 790 },
+    "Garlic Cream Soup": { "price": 790 }
+  },
+  "Starters": {
+    "Paneer Pakora": { "price": 1490, "description": { "en": "Paneer slices coated with gram flour (besan) and then deep fried until crispy.", "hu": "Paneer szeleteket gramm liszttel (besan) bevonva, majd ropogósra sütjük." } },
+    "Chicken Pakora": { "price": 1490, "description": { "en": "Marinated chicken slices coated with gram flour (besan) and then deep fried until crispy.", "hu": "Pácolt csirkeszeletek gramm liszttel (besan) bevonva, majd ropogósra sütve." } },
+    "Vegetable Pakora": { "price": 950, "description": { "en": "Spinach, onion, and potato in a spiced chickpea batter, fried crisp in traditional Pakistani style.", "hu": "Spenót, hagyma és burgonya fűszeres csicseriborsó-tésztában, hagyományos pakisztáni módra ropogósra sütve." } },
+    "Veg Samosa (2pcs)": { "price": 950, "description": { "en": "Pasta stuffed with potatoes and spices.", "hu": "Burgonyával és fűszerekkel töltött tészta." } },
+    "Veg Samosa Chat": { "price": 1850, "description": { "en": "Pasta stuffed with potatoes, and garnished with chickpeas and yogurt sauce.", "hu": "Krumplival töltött tészta, csicseriborsóval és házi joghurttal díszítve." } },
+    "Prawn Pakora (6pcs)": { "price": 1790, "description": { "en": "Prawns coated with gram flour (besan) and spices, then deep fried until crispy.", "hu": "Gramliszttel (besan) és fűszerekkel bevont garnélarák, majd ropogósra sütve." } }
+  },
+  "Raita, Salad": {
+    "Vegetable Salad": { "price": 690 },
+    "Cucumber Raita": { "price": 500 }
   }
 }
